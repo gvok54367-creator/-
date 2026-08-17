@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICU-ET Agent V0.4｜思维-标准融合版</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6e788c;--line:#e4e9f2;--blue:#2f66ef;--blue2:#eef4ff;--green:#198b62;--orange:#d98a25;--red:#d84a4a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;color:var(--text)}
+.wrap{max-width:1120px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.brand{font-size:12px;color:var(--blue);font-weight:800;letter-spacing:.7px}h1{font-size:29px;margin:6px 0}.sub{font-size:14px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 7px 22px rgba(35,50,85,.05);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef1f6;color:#59647a;font-size:12px;margin:0 5px 5px 0}
+.vitals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.vital{background:#fafbfe;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;color:var(--muted)}
+.vital b{display:block;font-size:18px;color:var(--text);margin-top:4px}.scene{background:var(--blue2);border-radius:14px;padding:16px;line-height:1.75;font-size:15px}
+.scene strong{font-size:16px}.phase{font-size:12px;color:var(--blue);font-weight:800;margin-bottom:6px}.actions{display:grid;gap:9px;margin-top:14px}
+button{border:1px solid var(--line);background:#f8f9fc;color:var(--text);border-radius:12px;padding:12px 13px;text-align:left;cursor:pointer;font-size:14px}
+button:hover{border-color:#b9c8f7;background:#f3f6ff}.primary{background:var(--blue);border-color:var(--blue);color:#fff;text-align:center}
+.status{margin-top:12px;border-radius:12px;background:#fafbfe;padding:11px;font-size:13px;line-height:1.65}.good{color:var(--green)}.warn{color:var(--orange)}.bad{color:var(--red)}
+.smalltitle{font-size:14px;font-weight:800;margin-bottom:8px}.log{list-style:none;margin:0;padding:0}.log li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.hidden{display:none}.score{font-size:50px;color:var(--blue);font-weight:900;line-height:1}.resulttop{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.tag{display:inline-block;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}.safe{background:#eaf8f2;color:var(--green)}.danger{background:#fff0f0;color:var(--red)}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}.row{margin:11px 0}.rowtop{display:flex;justify-content:space-between;font-size:13px}.bar{height:8px;background:#edf0f5;border-radius:999px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:var(--blue)}
+.note{font-size:12px;color:var(--muted);line-height:1.7}.logic{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}.logic div{background:#fafbfe;border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;font-size:12px}
+.rule{border-left:3px solid var(--blue);background:#fbfcfe;padding:10px 12px;font-size:12px;line-height:1.65;color:#536077;margin-top:12px}
+@media(max-width:800px){.grid,.twocol{grid-template-columns:1fr}.logic{grid-template-columns:1fr 1fr}.vitals{grid-template-columns:1fr 1fr}}
+@media print{.actions,.header button,.printHide{display:none!important}.wrap{max-width:none;padding:0}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="header">
+<div><div class="brand">ICU-ET AGENT · V0.4 THINKING + STANDARD</div><h1>心脏术后心搏骤停智能训练</h1><div class="sub">临床思维 × 操作标准 × 动态情境 × 过程评价</div></div>
+<button onclick="resetDemo()">重新训练</button>
+</div>
+
+<div id="trainView" class="grid">
+<div>
+<div class="card">
+<span class="pill">CABG术后2 h</span><span class="pill">ICU床旁</span><span class="pill">VF/pVT路径</span><span class="pill">思维-标准融合</span>
+<div class="vitals">
+<div class="vital">HR<b id="hr">88</b>次/min</div><div class="vital">ABP<b id="bp">116/64</b>mmHg</div><div class="vital">SpO₂<b id="spo2">98%</b></div><div class="vital">ETCO₂<b id="etco2">35</b>mmHg</div>
+</div>
+<div id="scene" class="scene"></div>
+<div id="actions" class="actions"></div>
+<div id="status" class="status">等待学习者决策……</div>
+</div>
+</div>
+
+<div>
+<div class="card">
+<div class="smalltitle">训练主线</div>
+<div class="logic"><div>识别</div><div>判断</div><div>决策</div><div>操作</div><div>再评估</div></div>
+<div class="rule">智能体不直接考“背诵标准”，而是在临床情境中要求学习者把标准转化为具体行动。</div>
+</div>
+<div class="card"><div class="smalltitle">过程记录</div><ul id="timeline" class="log"></ul></div>
+</div>
+</div>
+
+<div id="resultView" class="hidden">
+<div class="card"><div class="resulttop"><div><div class="brand">ICU-ET TRAINING REPORT</div><h1>训练结果</h1><div class="sub">CABG术后VF型心搏骤停</div></div><div style="text-align:right"><div id="score" class="score">0</div><div class="note">总分 / 100</div><div id="criticalTag" class="tag safe">无 Critical Error</div></div></div></div>
+
+<div class="twocol">
+<div class="card"><div class="smalltitle">关键时间节点</div><ul id="resultTimeline" class="log"></ul></div>
+<div class="card"><div class="smalltitle">能力画像</div><div id="bars"></div></div>
+</div>
+<div class="twocol">
+<div class="card"><div class="smalltitle good">✓ 达标行为</div><div id="goodList" class="note"></div></div>
+<div class="card"><div class="smalltitle warn">△ 待改进行为</div><div id="improveList" class="note"></div></div>
+</div>
+<div class="card"><div class="smalltitle">AI结构化复盘</div><div id="debrief" class="note" style="font-size:13px"></div></div>
+<div class="card printHide"><button class="primary" style="width:100%" onclick="window.print()">打印 / 保存结果</button><button style="width:100%;margin-top:8px;text-align:center" onclick="resetDemo()">再次训练</button></div>
+</div>
+</div>
+
+<script>
+const S=[
+{phase:"阶段1｜异常识别",text:`监护仪突然高级报警。患者无反应、无正常呼吸，动脉压波形消失。<br><strong>你首先怎么判断和处理？</strong>`,a:[
+["立即床旁评估意识、呼吸和脉搏；≤10秒不能明确触及脉搏即判断心搏骤停，启动抢救并开始按压","good",7],
+["先反复检查电极和监护线路，再决定是否评估患者","delay",18],
+["离开床旁去找医生，等待医生确认后再开始复苏","critical",25]]},
+{phase:"阶段2｜高质量CPR",text:`你已启动CPR。同事立即开始胸外按压，并问：“按压参数怎么控制？”<br><strong>你如何指导？</strong>`,a:[
+["100–120次/min；深度约5–6 cm；保证完全回弹；尽量减少中断","good",7],
+["80–100次/min；深度3–4 cm，避免过深","critical",25],
+[">140次/min；深度>7 cm，尽量提高灌注","critical",25]]},
+{phase:"阶段3｜心律分析前的中断管理",text:`除颤器已连接，团队准备进行心律分析。<br><strong>你如何组织按压暂停？</strong>`,a:[
+["仅在计划的短暂停顿中快速分析，脉搏检查≤10秒，除颤前后暂停尽可能短","good",6],
+["暂停20–30秒，完整观察心电图再决定","critical",25],
+["每次分析后先观察患者一段时间，再决定是否恢复按压","critical",25]]},
+{phase:"阶段4｜心律判断",text:`短暂停止按压：监护显示快速、杂乱、无规则波形，无明确QRS，动脉压无波形。<br><strong>你判断是什么？下一步核心方向是什么？</strong>`,a:[
+["室颤VF，可电击心律；立即组织除颤","good",6],
+["PEA，不可电击，继续按压即可","critical",25],
+["房颤伴快速心室率，进行同步复律","critical",25]]},
+{phase:"阶段5｜除颤模式与能量",text:`除颤器已准备好。同事问：“用同步还是非同步？能量设多少？”<br><strong>你如何回答？</strong>`,a:[
+["VF采用非同步除颤；双相能量按设备厂家推荐设置，若具体推荐未知可考虑设备最大能量","good",7],
+["采用同步复律，100 J起始","critical",25],
+["所有双相设备一律固定150 J","delay",16]]},
+{phase:"阶段6｜心脏术后特殊路径",text:`首次电击后仍为VF。你意识到患者为CABG术后2小时、监护下目击骤停。<br><strong>你是否需要调整普通ACLS思路？</strong>`,a:[
+["需要。心脏术后VF/pVT可快速完成最多3次连续电击，同时准备特殊救治/再开胸路径","good",7],
+["不需要，所有心搏骤停都完全相同","delay",16],
+["持续VF时改成同步复律","critical",25]]},
+{phase:"阶段7｜三次电击后仍无循环",text:`已快速完成3次电击，患者仍无有效循环。<br><strong>此时你的核心判断和团队行动是什么？</strong>`,a:[
+["继续高质量CPR，同时立即推进心外术后可逆原因评估和再开胸准备","good",7],
+["继续无限次外部除颤，不考虑术后机械性原因","critical",25],
+["暂停CPR，先做完整床旁超声再决定","critical",25]]},
+{phase:"阶段8｜药物思维：普通成人 vs 心外术后",text:`医生要求准备肾上腺素。<br><strong>你首先应该想到什么？</strong>`,a:[
+["先明确当前属于心脏术后特殊复苏路径，药物不能机械照搬普通成人方案；按已审核的心外术后规则执行","good",6],
+["所有成人心搏骤停都固定按普通1 mg方案，不需考虑术后情境","critical",25],
+["肾上腺素在心脏术后绝对禁用","delay",16]]},
+{phase:"阶段9｜肾上腺素标准",text:`系统调出经审核的规则：普通成人心搏骤停肾上腺素为1 mg IV/IO每3–5 min；但心脏术后特殊路径采用减量策略。<br><strong>本病例应选择哪个？</strong>`,a:[
+["按心脏术后特殊路径，采用经审核的减量IV肾上腺素0.05–0.1 mg，并与再开胸等措施并行","good",7],
+["机械执行普通成人1 mg IV每3–5 min","critical",25],
+["不核对规则，凭个人经验决定剂量","critical",25]]},
+{phase:"阶段10｜可逆原因",text:`复苏过程中，CVP持续升高，胸腔引流突然明显减少。<br><strong>结合术后背景，你最担心什么？</strong>`,a:[
+["警惕心包填塞/引流受阻等机械性原因，立即向心外团队汇报并推进再开胸评估","good",7],
+["引流减少说明出血停止，是好现象","critical",25],
+["只考虑镇静药物过量","delay",16]]},
+{phase:"阶段11｜动态再评估",text:`继续复苏后，ETCO₂由17突然升至38 mmHg，动脉压波形重新出现，102/62 mmHg，监护为窦性心律84次/min。<br><strong>你如何判断和处理？</strong>`,a:[
+["高度提示ROSC，快速确认循环，停止无指征的除颤并进入复苏后管理","good",6],
+["继续除颤，因为之前是VF","critical",25],
+["只看见窦律就宣布抢救结束","critical",25]]},
+{phase:"阶段12｜ROSC后评估",text:`已确认ROSC。患者仍气管插管机械通气。<br><strong>下一步你会如何组织评估？</strong>`,a:[
+["重新评估ABC、氧合/通气和血流动力学，获取12导联ECG，评估神经状态、体温及导致骤停的原因","good",7],
+["只记录ROSC，等待患者清醒后再进一步检查","critical",25],
+["只做12导联ECG，其余生命支持暂缓","delay",16]]}
+];
+
+let state=0,score=0,critical=false,elapsed=0,logs=[],goods=[],improves=[];
+let dims={"风险识别":0,"临床决策":0,"规范操作":0,"特殊情境判断":0,"团队协作":0,"动态再评估":0};
+const weights=[8,9,7,8,8,8,8,7,8,8,8,11];
+
+function fmt(s){let m=Math.floor(s/60),x=s%60;return String(m).padStart(2,"0")+":"+String(x).padStart(2,"0")}
+function render(){let s=S[state];scene.innerHTML=`<div class="phase">${s.phase}</div>${s.text}`;actions.innerHTML="";s.a.forEach(x=>{let b=document.createElement("button");b.textContent=x[0];b.onclick=()=>choose(x);actions.appendChild(b)})}
+function addlog(label,sec){elapsed+=sec;logs.push([label,fmt(elapsed)]);timeline.innerHTML=logs.map(x=>`<li><span>${x[0]}</span><b>${x[1]}</b></li>`).join("")}
+function addDim(){
+ if(state===0)dims["风险识别"]+=100;
+ if([0,3,6,7,9].includes(state))dims["临床决策"]+=20;
+ if([1,2,4,8].includes(state))dims["规范操作"]+=25;
+ if([5,6,7,8,9].includes(state))dims["特殊情境判断"]+=20;
+ if([0,1,4,6,7].includes(state))dims["团队协作"]+=20;
+ if([2,10,11].includes(state))dims["动态再评估"]+=33;
+}
+function choose(x){
+ let [label,type,sec]=x;addlog(S[state].phase,sec);
+ if(type==="good"){score+=weights[state];goods.push(`${S[state].phase}：${label}`);addDim();status.innerHTML="<span class='good'>✓ 临床判断与标准操作均达到当前节点要求。</span>"}
+ else if(type==="delay"){score+=Math.round(weights[state]*0.25);improves.push(`${S[state].phase}：${label} —— 存在优先级/标准偏差。`);status.innerHTML="<span class='warn'>△ 已记录思维或标准偏差，情境继续推进。</span>"}
+ else{critical=true;improves.push(`${S[state].phase}：${label} —— Critical Error。`);status.innerHTML="<span class='bad'>✕ Critical Error：关键患者安全风险。</span>"}
+ state++;updateVitals();if(state>=S.length)setTimeout(finish,300);else setTimeout(render,250)
+}
+function updateVitals(){if(state===1){hr.textContent="—";bp.textContent="无波形";etco2.textContent="18"}if(state===4){hr.textContent="VF"}if(state===11){hr.textContent="84";bp.textContent="102/62";etco2.textContent="38"}}
+function finish(){
+ trainView.classList.add("hidden");resultView.classList.remove("hidden");score=Math.min(100,score);document.getElementById("score").textContent=score;
+ criticalTag.className="tag "+(critical?"danger":"safe");criticalTag.textContent=critical?"存在 Critical Error":"无 Critical Error";
+ resultTimeline.innerHTML=logs.map(x=>`<li><span>${x[0]}</span><b>${x[1]}</b></li>`).join("");
+ bars.innerHTML=Object.keys(dims).map(k=>{let v=Math.min(100,dims[k]);return `<div class="row"><div class="rowtop"><span>${k}</span><b>${v}</b></div><div class="bar"><i style="width:${v}%"></i></div></div>`}).join("");
+ goodList.innerHTML=(goods.length?goods:["暂无完整达标节点"]).slice(0,7).map(x=>"• "+x).join("<br>");
+ improveList.innerHTML=(improves.length?improves:["未出现明显错误"]).slice(0,7).map(x=>"• "+x).join("<br>");
+ let low=Object.keys(dims).sort((a,b)=>dims[a]-dims[b])[0];
+ debrief.innerHTML=`<b>总体评价：</b>${critical?"本次训练出现关键安全错误，需针对对应节点进行重复训练。":"能够完成主要复苏流程，未出现Critical Error。"}<br><br>
+ <b>融合评价：</b>本次不仅评价是否“知道标准”，还评价能否在动态临床情境中完成识别、判断、决策、操作与再评估。<br><br>
+ <b>重点提升：</b>${low}。下一轮可保持同一学习目标，改变心律、病因或干扰信息，观察学习者是否能迁移应用。<br><br>
+ <b>系统安全边界：</b>药物剂量、除颤能量、本院再开胸流程等高风险内容应由专家审核后固化至规则库，不允许大模型自由生成。`;
+}
+function resetDemo(){state=0;score=0;critical=false;elapsed=0;logs=[];goods=[];improves=[];dims={"风险识别":0,"临床决策":0,"规范操作":0,"特殊情境判断":0,"团队协作":0,"动态再评估":0};resultView.classList.add("hidden");trainView.classList.remove("hidden");hr.textContent="88";bp.textContent="116/64";spo2.textContent="98%";etco2.textContent="35";timeline.innerHTML="";status.textContent="等待学习者决策……";render()}
+render();
+</script>
+</body>
+</html>
